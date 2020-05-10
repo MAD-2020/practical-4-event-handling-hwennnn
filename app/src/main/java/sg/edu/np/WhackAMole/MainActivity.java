@@ -14,24 +14,26 @@ import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
 
-    /* Hint
-        - The function setNewMole() uses the Random class to generate a random value ranged from 0 to 2.
-        - The function doCheck() takes in button selected and computes a hit or miss and adjust the score accordingly.
-        - The function doCheck() also decides if the user qualifies for the advance level and triggers for a dialog box to ask for user to decide.
-        - The function nextLevelQuery() builds the dialog box and shows. It also triggers the nextLevel() if user selects Yes or return to normal state if user select No.
-        - The function nextLevel() launches the new advanced page.
-        - Feel free to modify the function to suit your program.
-    */
+
+    private int count = 0;
+    private int last_location = 0;
+    private int last_const = 0;
+    private static final String TAG = "Whack-A-Mole";
+    private static final int[] BUTTON_IDS = {R.id.button_1, R.id.button_2, R.id.button_3};
+    Random ran = new Random();
+    TextView msg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        msg = findViewById(R.id.message);
 
+        setNewMole();
+        msg.setText(String.valueOf(count));
         Log.v(TAG, "Finished Pre-Initialisation!");
-
-
     }
+
     @Override
     protected void onStart(){
         super.onStart();
@@ -51,27 +53,81 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
-    private void doCheck(Button checkButton) {
-        /* Checks for hit or miss and if user qualify for advanced page.
-            Triggers nextLevelQuery().
-         */
-    }
 
     private void nextLevelQuery(){
-        /*
-        Builds dialog box here.
-        Log.v(TAG, "User accepts!");
-        Log.v(TAG, "User decline!");
         Log.v(TAG, "Advance option given to user!");
-        belongs here*/
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Warning! Insane Whack-A-Mole Incoming!");
+        builder.setMessage("Would you like to advance to the advance mode?");
+        builder.setCancelable(false);
+        builder.setPositiveButton("Yes", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                Log.v(TAG, "User accepts!");
+                nextLevel();
+            }
+        });
+        builder.setNegativeButton("No", new DialogInterface.OnClickListener(){
+            public void onClick(DialogInterface dialog, int id){
+                Log.v(TAG,"User decline!");
+            }
+        });
+
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     private void nextLevel(){
-        /* Launch advanced page */
+        Intent activityName = new Intent(MainActivity.this, Main2Activity.class);
+        Bundle extras = new Bundle();
+        extras.putInt("score", count);
+        activityName.putExtras(extras);
+        startActivity(activityName);
     }
 
-    private void setNewMole() {
-        Random ran = new Random();
+    public void setNewMole()
+    {
         int randomLocation = ran.nextInt(3);
+        Button this_btn = findViewById(BUTTON_IDS[randomLocation]);
+        Button last_btn = findViewById(BUTTON_IDS[last_location]);
+        last_btn.setText("O");
+        this_btn.setText("*");
+        last_location = randomLocation;
+    }
+
+    public void onClickBtn(View v)
+    {
+        switch(v.getId()) {
+            case R.id.button_1:
+                Log.v(TAG, "Button Left Clicked!");
+                break;
+            case R.id.button_2:
+                Log.v(TAG, "Button Middle Clicked!");
+                break;
+            case R.id.button_3:
+                Log.v(TAG, "Button Right Clicked!");
+        }
+
+        Button b = (Button)v;
+        String buttonText = b.getText().toString();
+        if (buttonText.equals("*")){
+            count++;
+            Log.v(TAG, "Hit, score added!");
+        }else{
+            if (count > 0){
+                count--;
+                Log.v(TAG, "Missed, score deducted!");
+            }else{
+                Log.v(TAG, "Missed Hit!");
+            }
+        }
+
+        setNewMole();
+        msg.setText(String.valueOf(count));
+
+        if (count % 10 == 0 && count > last_const){
+            last_const = count; //to record peak value of the count
+            nextLevelQuery();
+        }
     }
 }

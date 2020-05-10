@@ -4,4 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"/>
+    tools:context=".MainActivity">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/message"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.512" />
+
+    <Button
+        android:id="@+id/button_1"
+        android:onClick="onClickBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="75dp"
+        android:translationY="250dp"
+        android:text="O"
+        />
+
+
+    <Button
+        android:id="@+id/button_2"
+        android:onClick="onClickBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="160dp"
+        android:translationY="250dp"
+        android:text="O"
+        />
+
+
+    <Button
+        android:id="@+id/button_3"
+        android:onClick="onClickBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:translationX="245dp"
+        android:translationY="250dp"
+        android:text="O"
+        />
+
+</android.support.constraint.ConstraintLayout>
+
+
+
+
+
