@@ -24,7 +24,7 @@
         android:layout_height="wrap_content"
         android:translationX="75dp"
         android:translationY="250dp"
-        android:text="O"
+        android:text="@string/text_init"
         />
 
 
@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:translationX="160dp"
         android:translationY="250dp"
-        android:text="O"
+        android:text="@string/text_init"
         />
 
 
@@ -46,7 +46,7 @@
         android:layout_height="wrap_content"
         android:translationX="245dp"
         android:translationY="250dp"
-        android:text="O"
+        android:text="@string/text_init"
         />
 
 </android.support.constraint.ConstraintLayout>

@@ -26,6 +26,17 @@ public class Main2Activity extends AppCompatActivity {
     private static final int[] BUTTON_IDS = {R.id.button_1, R.id.button_2, R.id.button_3, R.id.button_4,
             R.id.button_5, R.id.button_6, R.id.button_7, R.id.button_8, R.id.button_9};
 
+    private final Handler mhandler = new Handler();
+    private final Runnable mrunnable = new Runnable() { //it is to make it run on thread as Only the original thread that created a view hierarchy can touch its views.
+        @Override
+        public void run() {
+            Log.v(TAG, "New Mole Location!");
+            setNewMole();
+            mhandler.postDelayed(this, 1000);
+        }
+    };
+
+
     private void readyTimer(){
 
         myCountDown = new CountDownTimer(10000, 1000){
@@ -54,18 +65,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void placeMoleTimer(){
-        final Handler mhandler = new Handler();
-        final Runnable runnable = new Runnable() { //it is to make it run on thread(ui) as Only the original thread that created a view hierarchy can touch its views.
-            @Override
-            public void run() {
-                Log.v(TAG, "New Mole Location!");
-			    setNewMole();
-                mhandler.postDelayed(this, 1000);
-            }
-        };
-        mhandler.postDelayed(runnable, 1000);
-        //mhandler.removeCallbacks(runnable);
-
+        mhandler.postDelayed(mrunnable, 1000);
     }
 
     @Override
@@ -88,6 +88,33 @@ public class Main2Activity extends AppCompatActivity {
         super.onStart();
     }
 
+    @Override
+    protected void onPause() {
+        Log.v(TAG,"Pause");
+        mhandler.removeCallbacks(mrunnable);
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Log.v(TAG,"Stop!");
+        mhandler.removeCallbacks(mrunnable);
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        Log.v(TAG,"Destroy");
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onResume() {
+        Log.v(TAG,"Resume!");
+        placeMoleTimer();
+        super.onResume();
+    }
+
     private void populateBtns(){
         for(final int id : BUTTON_IDS){
             Button btn = findViewById(id);
@@ -97,7 +124,11 @@ public class Main2Activity extends AppCompatActivity {
                     int _id = view.getId();
                     Button click_btn = (Button) findViewById(_id);
                     doCheck(click_btn);
-                    setNewMole();
+                    //methods below is to avoid calling of setNewMole() concurrently
+                    mhandler.removeCallbacks(mrunnable); // this is to interrupt the runnable
+                    setNewMole(); // this will be triggered after user has clicked the button
+                    placeMoleTimer(); // the runnable will run again
+
                 }
             });
         }
