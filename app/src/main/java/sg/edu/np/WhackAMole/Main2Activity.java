@@ -20,6 +20,7 @@ public class Main2Activity extends AppCompatActivity {
     private int advancedScore = 0;
     private int last_location = 0;
     private final static String TAG = "Whack-A-Mole 2.0";
+    private boolean resumeFlag = false; //this is to make sure the placeNewMole() methods will not run during the countdown
     TextView result;
     Random ran = new Random();
     CountDownTimer myCountDown;
@@ -59,6 +60,7 @@ public class Main2Activity extends AppCompatActivity {
                 myCountDown.cancel();
                 placeMoleTimer();
                 populateBtns();
+                resumeFlag = true; // onResume() can work rn after the countdown
             }
         };
         myCountDown.start();
@@ -111,7 +113,9 @@ public class Main2Activity extends AppCompatActivity {
     @Override
     protected void onResume() {
         Log.v(TAG,"Resume!");
-        placeMoleTimer();
+        if (resumeFlag){
+            placeMoleTimer(); //this will only be triggered after the countdown by turning the flag
+        }
         super.onResume();
     }
 
